@@ -10,12 +10,23 @@ var fs = require('fs'),
     config = require('./config');
 
 /* Connect to your database */
-
+mongoose.connect(config.db.uri, {useNewUrlParser: true});
 /* 
   Instantiate a mongoose model for each listing object in the JSON file, 
-  and then save it to your Mongo database 
+  and then save it to your Mongo database 	
  */
-
+var redme = JSON.parse(fs.readFileSync('listings.json', 'utf8'));
+var list;
+for ( var i = 0; i < redme.entries.length; i++) {
+  
+  list = new Listing ({
+  code: redme.entries[i].code,
+  name: redme.entries[i].name,
+  coordinates: {latitude: redme.entries[i].latitude, longitude: redme.entries[i].longitude},
+  address: redme.entries[i].address,
+	});
+	list.save();
+}
 
 /* 
   Once you've written + run the script, check out your MongoLab database to ensure that 
